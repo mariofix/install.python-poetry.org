@@ -1,34 +1,34 @@
 #!/usr/bin/env python3
 r"""
-This script will install Poetry and its dependencies in an isolated fashion.
+This script will install Flask-Admin CLI and its dependencies in an isolated fashion.
 
 It will perform the following steps:
     * Create a new virtual environment using the built-in venv module, or the virtualenv zipapp if venv is unavailable.
-      This will be created at a platform-specific path (or `$POETRY_HOME` if `$POETRY_HOME` is set:
-        - `~/Library/Application Support/pypoetry` on macOS
-        - `$XDG_DATA_HOME/pypoetry` on Linux/Unix (`$XDG_DATA_HOME` is `~/.local/share` if unset)
-        - `%APPDATA%\pypoetry` on Windows
+      This will be created at a platform-specific path (or `$FACLI_HOME` if `$FACLI_HOME` is set:
+        - `~/Library/Application Support/flask-admin-cli` on macOS
+        - `$XDG_DATA_HOME/flask-admin-cli` on Linux/Unix (`$XDG_DATA_HOME` is `~/.local/share` if unset)
+        - `%APPDATA%\flask-admin-cli` on Windows
     * Update pip inside the virtual environment to avoid bugs in older versions.
-    * Install the latest (or a given) version of Poetry inside this virtual environment using pip.
-    * Install a `poetry` script into a platform-specific path (or `$POETRY_HOME/bin` if `$POETRY_HOME` is set):
+    * Install the latest (or a given) version of Flask-Admin CLI inside this virtual environment using pip.
+    * Install a `flask-admin-cli` script into a platform-specific path (or `$FACLI_HOME/bin` if `$FACLI_HOME` is set):
         - `~/.local/bin` on Unix
         - `%APPDATA%\Python\Scripts` on Windows
     * Attempt to inform the user if they need to add this bin directory to their `$PATH`, as well as how to do so.
-    * Upon failure, write an error log to `poetry-installer-error-<hash>.log and restore any previous environment.
+    * Upon failure, write an error log to `flask-admin-cli-installer-error-<hash>.log and restore any previous environment.
 
 This script performs minimal magic, and should be relatively stable. However, it is optimized for interactive developer
 use and trivial pipelines. If you are considering using this script in production, you should consider manually-managed
 installs, or use of pipx as alternatives to executing arbitrary, unversioned code from the internet. If you prefer this
 script to alternatives, consider maintaining a local copy as part of your infrastructure.
 
-For full documentation, visit https://python-poetry.org/docs/#installation.
+For full documentation go to https://mariofix.github.io/flask-admin-cli.
 """  # noqa: E501
 import sys
 
 
 # Eager version check so we fail nicely before possible syntax errors
-if sys.version_info < (3, 6):  # noqa: UP036
-    sys.stdout.write("Poetry installer requires Python 3.6 or newer to run!\n")
+if sys.version_info < (3, 8):  # noqa: UP036
+    sys.stdout.write("Flask-Admin CLI installer requires Python 3.8 or newer to run!\n")
     sys.exit(1)
 
 
@@ -151,8 +151,8 @@ def string_to_bool(value):
 
 
 def data_dir() -> Path:
-    if os.getenv("POETRY_HOME"):
-        return Path(os.getenv("POETRY_HOME")).expanduser()
+    if os.getenv("FACLI_HOME"):
+        return Path(os.getenv("FACLI_HOME")).expanduser()
 
     if WINDOWS:
         base_dir = Path(_get_win_folder("CSIDL_APPDATA"))
@@ -162,12 +162,12 @@ def data_dir() -> Path:
         base_dir = Path(os.getenv("XDG_DATA_HOME", "~/.local/share")).expanduser()
 
     base_dir = base_dir.resolve()
-    return base_dir / "pypoetry"
+    return base_dir / "flask-admin-cli"
 
 
 def bin_dir() -> Path:
-    if os.getenv("POETRY_HOME"):
-        return Path(os.getenv("POETRY_HOME")).expanduser() / "bin"
+    if os.getenv("FACLI_HOME"):
+        return Path(os.getenv("FACLI_HOME")).expanduser() / "bin"
 
     if WINDOWS and not MINGW:
         return Path(_get_win_folder("CSIDL_APPDATA")) / "Python/Scripts"
